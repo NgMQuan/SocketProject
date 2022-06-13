@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
-"""Server for multithreaded (asynchronous) chat application."""
-# https://medium.com/swlh/lets-write-a-chat-app-in-python-f6783a9ac170
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 
+def login_process():
 
+def regist_process()"
+    
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
