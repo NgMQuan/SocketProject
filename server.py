@@ -1,19 +1,22 @@
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
+import json
+from os import path
+from regSys import regist_process, registUsernameCheck
 
-def login_process():
-
-def regist_process()"
-    
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
         client, client_address = SERVER.accept()
         print("%s:%s has connected." % client_address)
-        client.send(bytes("Greetings from the cave! Now type your name and press enter!", "utf8"))
-        addresses[client] = client_address
-        Thread(target=handle_client, args=(client,)).start()     
 
+        client.send(bytes("Please type 'login' or 'logout' to join server", "utf8"))
+        mode = client.recv(BUFSIZ).decode("utf8")
+        modeAccept(mode, client)
+
+        client.send(bytes("Greetings from the cave! Now type your username and press enter!", "utf8"))
+        addresses[client] = client_address
+        Thread(target=handle_client, args=(client,)).start()
 
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
@@ -43,6 +46,21 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
     for sock in clients:
         sock.send(bytes(prefix, "utf8")+msg)
 
+def modeAccept(mode, client):
+    modeL = mode.lower()
+    if modeL == 'logout':
+        regist_process(client)
+        client.send(bytes("Please type 'login' or 'logout' to join server", "utf8")) 
+        mode = client.recv(BUFSIZ).decode("utf8")
+        modeAccept(mode, client)
+    elif modeL == 'login':
+        login_process()
+    else:
+        client.send(bytes("Invalid input"), "utf8")
+        modeAccept(mode, client)
+
+def login_process():
+	return 1
         
 clients = {}
 addresses = {}
@@ -67,4 +85,3 @@ if __name__ == "__main__":
             SERVER.close()
     finally:
             SERVER.close()
-
