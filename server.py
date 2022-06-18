@@ -10,9 +10,7 @@ def accept_incoming_connections():
         client, client_address = SERVER.accept()
         print("%s:%s has connected." % client_address)
 
-        client.send(bytes("Please type 'login' or 'logout' to join server", "utf8"))
-        mode = client.recv(BUFSIZ).decode("utf8")
-        modeAccept(mode, client)
+        modeAccept(client)
 
         client.send(bytes("Greetings from the cave! Now type your username and press enter!", "utf8"))
         addresses[client] = client_address
@@ -46,18 +44,17 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
     for sock in clients:
         sock.send(bytes(prefix, "utf8")+msg)
 
-def modeAccept(mode, client):
-    modeL = mode.lower()
-    if modeL == 'logout':
+def modeAccept(client):
+    client.send(bytes("Please type 'login' or 'logout' to join server", "utf8")) 
+    mode = client.recv(BUFSIZ).decode("utf8").lower()
+    if mode == 'logout':
         regist_process(client)
-        client.send(bytes("Please type 'login' or 'logout' to join server", "utf8")) 
-        mode = client.recv(BUFSIZ).decode("utf8")
-        modeAccept(mode, client)
-    elif modeL == 'login':
+        modeAccept(client)
+    elif mode == 'login':
         login_process()
     else:
         client.send(bytes("Invalid input"), "utf8")
-        modeAccept(mode, client)
+        modeAccept(client)
 
 def login_process():
 	return 1
