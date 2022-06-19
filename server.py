@@ -45,15 +45,16 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
         sock.send(bytes(prefix, "utf8")+msg)
 
 def modeAccept(client):
-    client.send(bytes("Please type 'login' or 'register' to join server", "utf8"))
+    client.send(bytes("Please type 'login' or 'reg' to join server", "utf8")) 
     mode = client.recv(BUFSIZ).decode("utf8").lower()
-    if mode == 'register':
+    if mode == 'reg':
+        client.send(bytes("Regist new account!", "utf8"))
         regist_process(client)
         modeAccept(client)
     elif mode == 'login':
-        login_process(client)
+        login_process()
     else:
-        client.send(bytes("Invalid input"), "utf8")
+        client.send(bytes("Invalid input", "utf8"))
         modeAccept(client)
 
 clients = {}
