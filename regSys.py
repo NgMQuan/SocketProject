@@ -68,15 +68,17 @@ def login_process(client):
     fi = open('account.json')
     # load json data to dict account
     account = json.load(fi)
-    # checkduplicate username
-    if loginUsernameCheck(account, username, password) is False:
+    # get login info
+    accountL = loginUsernameCheck(account, username, password)
+    if accountL == -1:
         client.send(bytes("Wrong username or password!", "utf8"))
         login_process(client)
     else:
         client.send(bytes("Access Granted", "utf8"))
+        return accountL
 
 def loginUsernameCheck(account, username, password):
     for i in account['account']:
         if username == i['username'] and password == i['password']:
-            return True
-    return False
+            return i
+    return -1
