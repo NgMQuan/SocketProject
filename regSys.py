@@ -15,8 +15,8 @@ def regist_process(client):
     #load json data to dict account
     account = json.load(fi)
     #checkduplicate username	
-    if len(username) or registUsernameCheck(account, username) is False:	
-        client.send(bytes("Username has been created! Enter again", "utf8"))
+    if len(username) < 5 or registUsernameCheck(account, username) is False:	
+        client.send(bytes("Username has been created or too short (<5 symbol)! Enter again", "utf8"))
         regist_process(client)
     else:
         client.send(bytes("Username is valid!", "utf8"))
