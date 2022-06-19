@@ -10,16 +10,16 @@ def accept_incoming_connections():
         client, client_address = SERVER.accept()
         print("%s:%s has connected." % client_address)
 
-        modeAccept(client)
+        user = modeAccept(client)
 
-        client.send(bytes("Greetings from the cave! Now type your username and press enter!", "utf8"))
+        client.send(bytes("Greetings from the cave!", "utf8"))
         addresses[client] = client_address
-        Thread(target=handle_client, args=(client,)).start()
+        Thread(target=handle_client, args=(client, user,)).start()
 
-def handle_client(client):  # Takes client socket as argument.
+def handle_client(client, user):  # Takes client socket as argument.
     """Handles a single client connection."""
 
-    name = client.recv(BUFSIZ).decode("utf8")
+    name = user['username']
     welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
     client.send(bytes(welcome, "utf8"))
     msg = "%s has joined the chat!" % name
@@ -52,7 +52,7 @@ def modeAccept(client):
         regist_process(client)
         modeAccept(client)
     elif mode == 'login':
-        login_process(client)
+        return login_process(client)
     else:
         client.send(bytes("Invalid input", "utf8"))
         modeAccept(client)
