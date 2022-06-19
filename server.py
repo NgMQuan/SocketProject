@@ -2,7 +2,7 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import json
 from os import path
-from regSys import regist_process, registUsernameCheck
+from regSys import regist_process, login_process, registUsernameCheck
 
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
@@ -45,20 +45,17 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
         sock.send(bytes(prefix, "utf8")+msg)
 
 def modeAccept(client):
-    client.send(bytes("Please type 'login' or 'logout' to join server", "utf8")) 
+    client.send(bytes("Please type 'login' or 'register' to join server", "utf8"))
     mode = client.recv(BUFSIZ).decode("utf8").lower()
-    if mode == 'logout':
+    if mode == 'register':
         regist_process(client)
         modeAccept(client)
     elif mode == 'login':
-        login_process()
+        login_process(client)
     else:
         client.send(bytes("Invalid input"), "utf8")
         modeAccept(client)
 
-def login_process():
-	return 1
-        
 clients = {}
 addresses = {}
 
@@ -74,11 +71,11 @@ if __name__ == "__main__":
     SERVER.listen(5)
     print("Waiting for connection...")
     try:
-            ACCEPT_THREAD = Thread(target=accept_incoming_connections)
-    
-            ACCEPT_THREAD.start()
-            ACCEPT_THREAD.join()
+        ACCEPT_THREAD = Thread(target=accept_incoming_connections)
+
+        ACCEPT_THREAD.start()
+        ACCEPT_THREAD.join()
     except KeyboardInterrupt:
-            SERVER.close()
+        SERVER.close()
     finally:
-            SERVER.close()
+        SERVER.close()
