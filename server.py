@@ -10,12 +10,13 @@ def accept_incoming_connections():
         client, client_address = SERVER.accept()
         print("%s:%s has connected." % client_address)
 
-        client.send(bytes("Greetings from the cave!", "utf8"))
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
 
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
+    client.send(bytes("Greetings from the cave!", "utf8"))
+    
     user = modeAccept(client)
 
     name = user['username']
