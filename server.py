@@ -3,6 +3,7 @@ from threading import Thread
 import json
 from os import path
 from regSys import regist_process, login_process, registUsernameCheck
+from search import search_room
 
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
@@ -22,6 +23,9 @@ def handle_client(client):  # Takes client socket as argument.
     name = user['username']
     welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
     client.send(bytes(welcome, "utf8"))
+
+    search_room(client)
+
     msg = "%s has joined the chat!" % name
     broadcast(bytes(msg, "utf8"))
     clients[client] = name

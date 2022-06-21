@@ -1,0 +1,86 @@
+{
+    "hotel": [
+        {
+            "name": "New World",
+            "room": [
+                {
+                    "ID": 1,
+                    "type": "VIP",
+                    "description": "Have love chair <3",
+                    "price": 1000000,
+                    "image": "NW1.png",
+                    "arrivalDate": "21/06/2022",
+                    "leavingDate": "30/06/2022"
+                },
+                {
+                    "ID": 2,
+                    "type": "VIP",
+                    "description": "Have love chair <3",
+                    "price": 1000000,
+                    "image": "NW2.png",
+                    "arrivalDate": -1,
+                    "leavingDate": -1
+                },
+                {
+                    "ID": 3,
+                    "type": "VIP",
+                    "description": "Sea View",
+                    "price": 1500000,
+                    "image": "NW3.png",
+                    "arrivalDate": -1,
+                    "leavingDate": -1
+                },
+                {
+                    "ID": 4,
+                    "type": "normal",
+                    "description": "Nothing special",
+                    "price": 500000,
+                    "image": "NW4.png",
+                    "arrivalDate": -1,
+                    "leavingDate": -1
+                },
+                {
+                    "ID": 5,
+                    "type": "normal",
+                    "description": "Nothing special",
+                    "price": 500000,
+                    "image": "NW5.png",
+                    "arrivalDate": "25/06/2022",
+                    "leavingDate": "28/06/2022"
+                },
+                {
+                    "ID": 6,
+                    "type": "normal",
+                    "description": "Just nothing here",
+                    "price": 500000,
+                    "image": "NW6.png",
+                    "arrivalDate": -1,
+                    "leavingDate": -1
+                }
+            ]
+        },
+        {
+            "name": "Old World",
+            "room": [
+                {
+                    "ID": 1,
+                    "type": "normal",
+                    "description": "Nothing special",
+                    "price": 500000,
+                    "image": "OW1.png",
+                    "arrivalDate": "21/06/2022",
+                    "leavingDate": "21/06/2023"
+                },
+                {
+                    "ID": 2,
+                    "type": "normal",
+                    "description": "Nothing special",
+                    "price": 500000,
+                    "image": "OW2.png",
+                    "arrivalDate": "25/06/2022",
+                    "leavingDate": "28/06/2023"
+                }
+            ]
+        }
+    ]
+}
