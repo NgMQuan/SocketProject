@@ -1,8 +1,1 @@
-{
-    "account": [
-        {
-            "username": "duckongu",
-            "password": "vianhquadeptrai"
-        }
-    ]
-}
+{"account": [{"username": "duckongu", "password": "vianhquadeptrai"}, {"username": "minhongu", "password": "12345", "payID": "1234567891"}]}

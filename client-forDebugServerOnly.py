@@ -3,6 +3,7 @@
 #https://medium.com/swlh/lets-write-a-chat-app-in-python-f6783a9ac170
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
+from tkinter import *
 import tkinter
 
 
@@ -25,31 +26,57 @@ def send(event=None):  # event is passed by binders.
         client_socket.close()
         top.quit()
 
+def create_user (event = None):
+    """Handles sending username and password."""
+    usn = username.get()
+    username.set("")
+    pas = password.get()
+    password.set ("")
+    client_socket.send(bytes(usn, "utf8"))
+    client_sokcet.send(bytes(pas, "utf8"))
+
 
 def on_closing(event=None):
     """This function is to be called when the window is closed."""
     my_msg.set("{quit}")
     send()
 
-top = tkinter.Tk()
-top.title("Chatter")
 
-messages_frame = tkinter.Frame(top)
-my_msg = tkinter.StringVar()  # For the messages to be sent.
+top = tkinter.Tk()
+top.title("Spy x Family Booking")
+top.configure ( bg = "white")
+Background = tkinter.Canvas(top, bg="sky blue").place(height = 400,width = 355)
+inform = tkinter.Label ( top,bg ="white",text =  " Create Account",font=('Helvetica 30 bold'),fg = "sky blue").place(x = 430, y = 100)
+welcome = tkinter.Label ( top,bg ="sky blue",text =  " Welcome back! ",font=('Helvetica 30 bold'),fg = "white").place(x = 59, y = 100)
+welcom1 = tkinter.Label ( top,bg ="sky blue" ,text =" Already a customer, sign in to continue booking", font =('Helvetica 15'),  fg = "white")
+welcom1.place ( x = 29, y = 190)
+username = tkinter.Label ( top,bg ="light grey", text = " Username ", font=('Helvetica 15 bold'),fg = "sky blue").place (x = 400, y = 200 )
+password = tkinter.Label ( top,bg = "light grey", text = " Password ",font=('Helvetica 15 bold'),fg = "sky blue").place ( x= 400 , y = 240)
+entry_username = tkinter.Entry (top). place ( x = 490, y = 200)
+entry_password = tkinter.Entry (top).place ( x = 490, y = 240 )
+create_button =tkinter.Button(top, text="Create", command=create_user)
+create_button.place(x = 540, y = 270)
+signin_button = tkinter.Button (top, text = " Sign in ", command = create_user)
+signin_button.place (x = 130, y = 270 )
+
+
+#messages_frame =tkinter.Label(top, text = " Hello")
+
+my_msg =tkinter.StringVar()  # For the messages to be sent.
 my_msg.set("Type your messages here.")
-scrollbar = tkinter.Scrollbar(messages_frame)  # To navigate through past messages.
+#scrollbar =tkinter.Scrollbar(messages_frame)  # To navigate through past messages.
 # Following will contain the messages.
-msg_list = tkinter.Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
-scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
-msg_list.pack()
-messages_frame.pack()
+#msg_list =tkinter. Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
+#scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+#msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
+#msg_list.pack()
+#messages_frame.pack()
 
 entry_field = tkinter.Entry(top, textvariable=my_msg)
 entry_field.bind("<Return>", send)
 entry_field.pack()
-send_button = tkinter.Button(top, text="Send", command=send)
-send_button.pack()
+#send_button =tkinter.Button(top, text="Send", command=send)
+#send_button.place(x = 130, y = 130)
 
 top.protocol("WM_DELETE_WINDOW", on_closing)
 
