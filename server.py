@@ -48,12 +48,29 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
         sock.send(bytes(prefix, "utf8")+msg)
 
 def modeAccept(client):
+    mode, user, passw, pay = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
+    print(mode)
+    print(user)
+    print(passw)
+    print(pay)
+    """
     mode = client.recv(BUFSIZ).decode("utf8").lower()
+    print(mode)
+    username = client.recv(BUFSIZ).decode("utf8").lower()
+    print(username)
+    password = client.recv(BUFSIZ).decode("utf8").lower()
+    print(password)
+    pay = client.recv(BUFSIZ).decode("utf8").lower()
+    print(pay)
+    client.send(bytes("accept", "utf8"))
+    username = client.recv(BUFSIZ).decode("utf8").lower()
+    print(mode)
     if mode == 'reg':
         regist_process(client)
         modeAccept(client)
     elif mode == 'login':
         return login_process(client)
+    """
 
 
 clients = {}
