@@ -16,8 +16,7 @@ def accept_incoming_connections():
 
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
-    client.send(bytes("Greetings from the cave!", "utf8"))
-    
+
     user = modeAccept(client)
 
     name = user['username']
@@ -49,23 +48,19 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
         sock.send(bytes(prefix, "utf8")+msg)
 
 def modeAccept(client):
-    client.send(bytes("Please type 'login' or 'reg' to join server", "utf8")) 
     mode = client.recv(BUFSIZ).decode("utf8").lower()
     if mode == 'reg':
-        client.send(bytes("Regist new account!", "utf8"))
         regist_process(client)
         modeAccept(client)
     elif mode == 'login':
         return login_process(client)
-    else:
-        client.send(bytes("Invalid input", "utf8"))
-        modeAccept(client)
+
 
 clients = {}
 addresses = {}
 
 HOST = "127.0.0.1"
-PORT = 33000
+PORT = 62000
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
 
