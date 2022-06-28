@@ -24,7 +24,7 @@ def receive():
     while True:
         try:
             msg = client_socket.recv(BUFSIZ).decode("utf8")
-            msg_list.insert(tkinter.END, msg)
+            #msg_list.insert(tkinter.END, msg)
         except OSError:  # Possibly client has left the chat.
             break
 
@@ -87,7 +87,7 @@ signin_button.place (x = 130, y = 270 )
 
 #messages_frame =tkinter.Label(top, text = " Hello")
 
-#my_msg =tkinter.StringVar()  # For the messages to be sent.
+my_msg =tkinter.StringVar()  # For the messages to be sent.
 #my_msg.set("Type your messages here.")
 #scrollbar =tkinter.Scrollbar(messages_frame)  # To navigate through past messages.
 # Following will contain the messages.
