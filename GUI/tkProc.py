@@ -4,10 +4,7 @@ import tkinter as tk
 
 def create_user (client_socket, usn, pas, pay):
     """Handles sending username and password."""
-    client_socket.send(bytes("reg", "utf8"))
-    client_socket.send(bytes(usn.get(), "utf8"))
-    client_socket.send(bytes(pas.get(), "utf8"))
-    client_socket.send(bytes(pay.get(), "utf8"))
+    client_socket.sendall(str.encode("\n".join(["reg", usn.get(), pas.get(), pay.get()])))
     usn.set("")
     pas.set ("")
     pay.set("")

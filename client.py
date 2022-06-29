@@ -1,7 +1,9 @@
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import tkinter
-from GUI.tki import *
+import sys
+sys.path.insert(0, 'GUI')
+from tki import *
 
 def receive():
     """Handles receiving of messages."""

@@ -3,7 +3,7 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import tkinter as tk
 from tkinter import BOTH, ttk
-from GUI.tkProc import *
+from tkProc import *
 
 def initGUI(client_socket):
     root = tk.Tk()
