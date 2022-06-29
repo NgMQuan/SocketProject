@@ -30,9 +30,9 @@ class Reg:
         self.pas = tk.StringVar()
         self.pay = tk.StringVar()
         #entry
-        self.entry_username = ttk.Entry(self.reg)
-        self.entry_password = ttk.Entry(self.reg)
-        self.entry_payId = ttk.Entry(self.reg)
+        self.entry_username = ttk.Entry(self.reg, textvariable = self.usn)
+        self.entry_password = ttk.Entry(self.reg, textvariable = self.pas)
+        self.entry_payId = ttk.Entry(self.reg,textvariable = self.pay)
         #button
         self.create_button =ttk.Button(self.reg, text="Create", command=lambda: create_user(client_socket, self.usn, self.pas, self.pay))
         self.signin_button = ttk.Button (self.reg, text = " Sign in ", command = lambda: create_user(client_socket, self.usn, self.pas, self.pay))

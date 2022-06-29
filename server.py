@@ -9,7 +9,7 @@ def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
         client, client_address = SERVER.accept()
-        print("%s:%s has connected." % client_address)
+        print("%s:%s has connected.2" % client_address)
 
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
@@ -18,10 +18,11 @@ def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
 
     user = modeAccept(client)
+    print(0)
 
     name = user['username']
     welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
-    client.send(bytes(welcome, "utf8"))
+    client.send(welcome.encode())
 
     search_room(client)
 
@@ -49,10 +50,14 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
 
 def modeAccept(client):
     mode, user, passw, pay = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
-    print(mode)
-    print(user)
-    print(passw)
-    print(pay)
+    if mode == 'log':
+        acc = login_process(client, user, passw)
+        if acc == -1:
+            return modeAccept(client)
+        else:
+            return acc
+    else:
+        regist_process()
     """
     mode = client.recv(BUFSIZ).decode("utf8").lower()
     print(mode)
@@ -69,15 +74,14 @@ def modeAccept(client):
         regist_process(client)
         modeAccept(client)
     elif mode == 'login':
-        return login_process(client)
-    """
+        return login_process(client) """
 
 
 clients = {}
 addresses = {}
 
 HOST = "127.0.0.1"
-PORT = 62000
+PORT = 60008
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
 

@@ -7,14 +7,13 @@ from tki import *
 
 def receive():
     """Handles receiving of messages."""
-    # while True:
-    #     try:
-    #         #msg = client_socket.recv(BUFSIZ).decode("utf8")
-    #         #msg_list.insert(tkinter.END, msg)
+    while True:
+         try:
+             msg = client_socket.recv(BUFSIZ).decode("utf8")
+             #msg_list.insert(tkinter.END, msg)
     #         a = 0
-    #     except OSError:  # Possibly client has left the chat.
-    #         break
-    a = 0
+         except OSError:  # Possibly client has left the chat.
+             break
 
 
 # def send(event=None):  # event is passed by binders.
@@ -32,11 +31,7 @@ def receive():
 #     send()
 
 HOST = "127.0.0.1"
-PORT = 62000
-if not PORT:
-    PORT = 62000
-else:
-    PORT = int(PORT)
+PORT = 60008
 
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
