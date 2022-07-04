@@ -86,7 +86,7 @@ class Log(tk.Frame):
         self.entry_username = ttk.Entry(self, textvariable = self.usn)
         self.entry_password = ttk.Entry(self, textvariable = self.pas)
         #button
-        self.create_button =ttk.Button(self, text="Login", command=lambda: create_user(client_socket, self.usn, self.pas, 0, "log"))
+        self.create_button =ttk.Button(self, text="Login", command=lambda: create_user(client_socket, self.usn, self.pas, "0", "log"))
         self_button = ttk.Button (self, text = " Regist ", command = lambda: contrl.showframe(Reg))
         #display calls
         self.welcom1.grid(row = 1, column = 0, padx = 30, pady = 10)
