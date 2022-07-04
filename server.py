@@ -53,16 +53,16 @@ def modeAccept(client):
     if mode == 'log':
         acc = login_process(client, user, passw)
         if acc == -1:
-            client.send(bytes("fail", 'utf-8'))
+            client.send(str.encode("fL"))
             return modeAccept(client)
         else:
-            client.send(str.encode("success"))
+            client.send(str.encode("sL"))
             return acc
     else:
         if regist_process(client, user, passw, pay) is True:
-            client.send(str.encode("s"))
+            client.send(str.encode("sR"))
         else:
-            client.send(str.encode("f"))
+            client.send(str.encode("fR"))
         return modeAccept(client)
     """
     mode = client.recv(BUFSIZ).decode("utf8").lower()
