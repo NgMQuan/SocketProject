@@ -2,7 +2,7 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import json
 from os import path
-from regSys import regist_process, login_process, registUsernameCheck
+from regSys import *
 from search import search_room
 
 def accept_incoming_connections():
@@ -18,7 +18,7 @@ def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
 
     user = modeAccept(client)
-    print(0)
+    print("Login Successfully")
 
     name = user['username']
     welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
@@ -53,11 +53,16 @@ def modeAccept(client):
     if mode == 'log':
         acc = login_process(client, user, passw)
         if acc == -1:
+            client.send(bytes("fail", 'utf-8'))
             return modeAccept(client)
         else:
+            client.send(str.encode("success"))
             return acc
     else:
-        regist_process()
+        if regist_process(client, user, passw, pay) is True:
+            client.send(str.encode("s"))
+        else:
+            client.send(str.encode("f"))
         return modeAccept(client)
     """
     mode = client.recv(BUFSIZ).decode("utf8").lower()
