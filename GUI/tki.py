@@ -40,14 +40,14 @@ class Reg(tk.Frame):
         #Background
         self.Background = tk.Canvas(self, bg="sky blue").place(height = 400,width = 500)
         #Labels
-        self.inform = tk.Label (self,bg ="white",text =  " Create Account",font=('Helvetica 30 bold'),fg = "sky blue").grid(row = 0, column = 5, padx = 10, pady = 10)
-        self.welcome = tk.Label (self,bg ="sky blue",text =  " Welcome back! ",font=('Helvetica 30 bold'),fg = "white").grid(row = 0, column = 0, padx = 10, pady = 10)
-        self.welcom1 = tk.Label (self,bg ="sky blue" ,text =" Already a customer, sign in to continue booking", font =('Helvetica 15'),  fg = "white")
-        self.username = tk.Label (self,bg ="light grey", text = " Username ", font=('Helvetica 15 bold'),fg = "sky blue")
-        self.password = tk.Label (self,bg = "light grey", text = " Password ",font=('Helvetica 15 bold'),fg = "sky blue")
-        self.payId = tk.Label (self,bg = "light grey", text = " Pay ID ",font=('Helvetica 15 bold'),fg = "sky blue")
-        self.announceF = tk.Label(self, text = " Ngu ",font=('Helvetica 10 italic'),fg = "red")
-        self.announceS = tk.Label(self, text = " Oke ",font=('Helvetica 10 italic'),fg = "green")
+        self.inform = tk.Label (self,bg ="white",text =  "Create An Account",font=('Helvetica 30 bold'),fg = "sky blue").grid(row = 0, column = 5, padx = 10, pady = 10)
+        self.welcome = tk.Label (self,bg ="sky blue",text =  "Welcome back! ",font=('Helvetica 30 bold'),fg = "white").grid(row = 0, column = 0, padx = 10, pady = 10)
+        self.welcom1 = tk.Label (self,bg ="sky blue" ,text ="Already a customer, sign in to continue booking", font =('Helvetica 15'),  fg = "white")
+        self.username = tk.Label (self,bg ="light grey", text = "Username ", font=('Helvetica 15 bold'),fg = "sky blue")
+        self.password = tk.Label (self,bg = "light grey", text = "Password ",font=('Helvetica 15 bold'),fg = "sky blue")
+        self.payId = tk.Label (self,bg = "light grey", text = "Pay ID ",font=('Helvetica 15 bold'),fg = "sky blue")
+        self.announceF = tk.Label(self, text = "Fail to register! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
+        self.announceS = tk.Label(self, text = "Succeed! Press sign in button and log in to continue!",font=('Helvetica 10 italic'),fg = "green")
         #string var
         self.usn = tk.StringVar()
         self.pas = tk.StringVar()
@@ -57,8 +57,8 @@ class Reg(tk.Frame):
         self.entry_password = ttk.Entry(self, textvariable = self.pas)
         self.entry_payId = ttk.Entry(self,textvariable = self.pay)
         #button
-        self.create_button =ttk.Button(self, text="Create", command=lambda: create_user(client_socket, self.usn, self.pas, self.pay, "reg", contrl, self))
-        self.signin_button = ttk.Button (self, text = " Sign in ", command = lambda: contrl.showframe(Log))
+        self.create_button =ttk.Button(self, text="Register", command=lambda: create_user(client_socket, self.usn, self.pas, self.pay, "reg", contrl, self))
+        self.signin_button = ttk.Button (self, text = "Sign In", command = lambda: contrl.showframe(Log))
         #display calls
         self.welcom1.grid(row = 3, column = 0, padx = 30, pady = 10)
         self.username.grid(row = 4, column = 4, padx = 40, pady = 10)
@@ -76,12 +76,12 @@ class Log(tk.Frame):
         #Background
         self.Background = tk.Canvas(self, bg="sky blue").place(height = 400,width = 550)
         #Labels
-        self.inform = tk.Label (self,bg ="white",text =  " Login",font=('Helvetica 30 bold'),fg = "sky blue").grid(row = 0, column = 5, padx = 10, pady = 10)
-        self.welcome = tk.Label (self,bg ="sky blue",text =  " Welcome back! ",font=('Helvetica 30 bold'),fg = "white").grid(row = 0, column = 0, padx = 10, pady = 10)
-        self.welcom1 = tk.Label (self,bg ="sky blue" ,text =" Not a customer, create an account to continue booking", font =('Helvetica 15'),  fg = "white")
-        self.username = tk.Label (self,bg ="light grey", text = " Username ", font=('Helvetica 15 bold'),fg = "sky blue")
-        self.password = tk.Label (self,bg = "light grey", text = " Password ",font=('Helvetica 15 bold'),fg = "sky blue")
-        self.announceF = tk.Label(self, text = " Ngu ",font=('Helvetica 10 italic'),fg = "red")
+        self.inform = tk.Label (self,bg ="white",text =  "Log In To Your Account",font=('Helvetica 30 bold'),fg = "sky blue").grid(row = 0, column = 5, padx = 10, pady = 10)
+        self.welcome = tk.Label (self,bg ="sky blue",text =  "Welcome back! ",font=('Helvetica 30 bold'),fg = "white").grid(row = 0, column = 0, padx = 10, pady = 10)
+        self.welcom1 = tk.Label (self,bg ="sky blue" ,text ="Not a customer, create an account to continue booking", font =('Helvetica 15'),  fg = "white")
+        self.username = tk.Label (self,bg ="light grey", text = "Username ", font=('Helvetica 15 bold'),fg = "sky blue")
+        self.password = tk.Label (self,bg = "light grey", text = "Password ",font=('Helvetica 15 bold'),fg = "sky blue")
+        self.announceF = tk.Label(self, text = "Fail to log in! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
         #string var
         self.usn = tk.StringVar()
         self.pas = tk.StringVar()
@@ -90,7 +90,7 @@ class Log(tk.Frame):
         self.entry_password = ttk.Entry(self, textvariable = self.pas)
         #button
         self.create_button =ttk.Button(self, text="Login", command=lambda: create_user(client_socket, self.usn, self.pas, "0", "log", contrl, self))
-        self_button = ttk.Button (self, text = " Regist ", command = lambda: contrl.showframe(Reg))
+        self_button = ttk.Button (self, text = "Sign Up", command = lambda: contrl.showframe(Reg))
         #display calls
         self.welcom1.grid(row = 3, column = 0, padx = 30, pady = 10)
         self.username.grid(row = 4, column = 4, padx = 40, pady = 10)
