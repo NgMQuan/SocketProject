@@ -160,7 +160,7 @@ class Home(tk.Frame):
         self.hotelName = tk.Label (self, bg ="light grey", text = "Hotel name", font=('Helvetica 15 bold'),fg = "sky blue")
         self.arrivalDate = tk.Label (self, bg = "light grey", text = "Arrival Date",font=('Helvetica 15 bold'),fg = "sky blue")
         self.leavingDate = tk.Label (self, bg = "light grey", text = "Leaving Date",font=('Helvetica 15 bold'),fg = "sky blue")
-        self.announceF = tk.Label(self, bg = "sky blue", text = "Fail to search! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
+        self.announceF = tk.Label(self, bg = "sky blue", text = "Fail to search or hotel is full! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
         
         #string var
         self.htn = tk.StringVar()
@@ -236,6 +236,7 @@ class Room(tk.Frame):
                         tk.Label(roomframe, bg ="sky blue", text = "__________________________________",font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
                 break
+        self.searchAgainButton = tk.Button(roomframe, text="Search Again", command = lambda: contrl.showframe(Home)).grid(row=count,column=0)
 
 IDlist = []
 hotelSearchName = ""

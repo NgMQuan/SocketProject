@@ -20,7 +20,7 @@ def searchRoom(client):
     IDlist = search_room(client, htn, ard, lvd)
     if len(IDlist) == 0:
         client.sendall(str.encode("fS"))
-        return searchRoom(client, htn, ard, lvd)
+        return searchRoom(client)
     else:
         return IDlist
 
