@@ -3,6 +3,7 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import tkinter as tk
 from tkinter import BOTH, ttk
+import json
 #from tkProc import *
 
 def initGUI(client_socket):
@@ -25,7 +26,6 @@ def create_user (client_socket, usn, pas, pay, mode, control, frame):
 
     if flag == "sL":
         control.showframe(Home)
-        control.frames[Home].hotelBox.grid(row = 15, column = 0)
     elif flag == "fR":
         frame.announceS.grid_forget()
         frame.announceF.grid(row = 3, column = 5)
@@ -34,6 +34,23 @@ def create_user (client_socket, usn, pas, pay, mode, control, frame):
         frame.announceS.grid(row = 3, column = 5)
     else:
         frame.announceF.grid(row = 3, column = 5)
+
+def sendSearch(client_socket, htn, ard, lvd, control, frame):
+    client_socket.sendall(str.encode("\n".join([htn.get(), ard.get(), lvd.get()])))
+    htn.set("")
+    ard.set("")
+    lvd.set("")
+
+    flag = client_socket.recv(2048).decode('utf-8')
+
+    if flag == 'fS':
+        frame.announceF.grid(row = 8, column = 1)
+    else:
+        # data = client_socket.recv(2048)
+        # data = data.decode('utf-8')
+        data = eval(flag)
+        print(data)
+        control.showframe(Room)
 
 class Controller(tk.Tk):
     def __init__(self, client_socket, *args, **kwargs):
@@ -130,9 +147,9 @@ class Home(tk.Frame):
     def __init__(self, root, client_socket, contrl):
         tk.Frame.__init__(self, root)
         #Background
-        self.Background = tk.Canvas(self, bg="sky blue").place(height = 400,width = 600)
+        self.Background = tk.Canvas(self, bg="sky blue").place(height = 600,width = 750)
         #Labels
-        self.searchLabel = tk.Label (self, bg ="sky blue", text = "Search Room",font=('Helvetica 30 bold'),fg = "white").grid(row = 2, column = 1, padx = 30, pady = 10)
+        self.searchLabel = tk.Label (self, bg ="sky blue", text = "Search Room",font=('Helvetica 30 bold'),fg = "white").grid(row = 3, column = 1, pady = 10)
         self.note = tk.Label (self, bg ="sky blue" , text = "Fill up the form below to search", font =('Helvetica 15'),  fg = "white")
         self.hotelName = tk.Label (self, bg ="light grey", text = "Hotel name", font=('Helvetica 15 bold'),fg = "sky blue")
         self.arrivalDate = tk.Label (self, bg = "light grey", text = "Arrival Date",font=('Helvetica 15 bold'),fg = "sky blue")
@@ -148,25 +165,31 @@ class Home(tk.Frame):
         self.entry_arrivalDate = ttk.Entry(self, textvariable = self.ard)
         self.entry_leavingDate = ttk.Entry(self, textvariable = self.lvd)
         #button
-        self.searchButton =ttk.Button(self, text = "Search")
+        self.searchButton =ttk.Button(self, text = "Search", command=lambda: sendSearch(client_socket, self.htn, self.ard, self.lvd, contrl, self))
         self.bookingButton = ttk.Button (self, text = "Book")
         #display calls
-        self.announceF.grid(row = 10, column = 1)
-        self.note.grid(row = 4, column = 1, padx = 30, pady = 10)
-        self.hotelName.grid(row = 7, column = 0, padx = 0, pady = 10)
-        self.arrivalDate.grid(row = 8, column = 0, padx = 0, pady = 10)
-        self.leavingDate.grid(row = 9, column = 0, padx = 0, pady = 10)
-        self.entry_hotelName.grid(row = 7, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
-        self.entry_arrivalDate.grid(row = 8, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
-        self.entry_leavingDate.grid(row = 9, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
-        self.searchButton.grid(row = 11, column = 1, padx = 10, pady = 10)
-        self.bookingButton.grid(row = 12, column = 1, padx = 10, pady = 10)
+        self.note.grid(row = 4, column = 1, pady = 10)
+        self.hotelName.grid(row = 5, column = 0, pady = 10)
+        self.arrivalDate.grid(row = 6, column = 0, pady = 10)
+        self.leavingDate.grid(row = 7, column = 0, pady = 10)
+        self.entry_hotelName.grid(row = 5, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
+        self.entry_arrivalDate.grid(row = 6, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
+        self.entry_leavingDate.grid(row = 7, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
+        self.searchButton.grid(row = 9, column = 1, padx = 10, pady = 10)
+        self.bookingButton.grid(row = 10, column = 1, padx = 10, pady = 10)
         
         # hotel list
-        self.hotelBox = tk.LabelFrame(root, text='HOTEL LIST', bd=4, labelanchor='n', font='Helvetica 30 bold', fg='navy blue', width=600, height=100)
-        hotel = ('New World', 'Old World')
+        self.hotelBox = tk.LabelFrame(self, text='HOTEL LIST', bd=4, labelanchor='n', font='Helvetica 30 bold', fg='navy blue', width=600, height=100)
+        hotel = []
+        for i in hotels['hotel']:
+            hotel.append(i['name'])
+        self.hotelBox.grid(row = 0, column = 1)
         self.hotel_var = tk.StringVar(value = hotel)
         self.htlist = tk.Listbox(self.hotelBox, bg = "light green", height = 5, width = 31, font = ("Helvetica 20"), fg = "white", listvariable = self.hotel_var)
-        scrollbar = tk.Scrollbar(root, orient = 'vertical', command = self.htlist.yview)
+        scrollbar = tk.Scrollbar(self, orient = 'vertical', command = self.htlist.yview)
         self.htlist['yscrollcommand'] = scrollbar.set
-        self.htlist.grid(row = 1, column = 4)
+        self.htlist.grid(row = 1, column = 1)
+
+fi = open('hotel.json')
+# load json data to dict account
+hotels = json.load(fi)

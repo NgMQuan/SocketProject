@@ -14,17 +14,27 @@ def accept_incoming_connections():
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
 
+def searchRoom(client):
+    htn, ard, lvd = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
+
+    IDlist = search_room(client, htn, ard, lvd)
+    if len(IDlist) == 0:
+        client.sendall(str.encode("fS"))
+        return searchRoom(client, htn, ard, lvd)
+    else:
+        return IDlist
+
+
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
 
     user = modeAccept(client)
-    print("Login Successfully")
+    IDlist = searchRoom(client)
+    data = str(IDlist)
+    data = data.encode()
+    client.sendall(data)
+    
 
-    name = user['username']
-    welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
-    client.send(welcome.encode())
-
-    search_room(client)
 
     msg = "%s has joined the chat!" % name
     broadcast(bytes(msg, "utf8"))
@@ -53,10 +63,10 @@ def modeAccept(client):
     if mode == 'log':
         acc = login_process(client, user, passw)
         if acc == -1:
-            client.send(str.encode("fL"))
+            client.sendall(str.encode("fL"))
             return modeAccept(client)
         else:
-            client.send(str.encode("sL"))
+            client.sendall(str.encode("sL"))
             return acc
     else:
         if regist_process(client, user, passw, pay) is True:

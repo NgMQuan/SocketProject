@@ -4,20 +4,12 @@ from os import path
 BUFSIZ = 1024
 
 
-def search_room(client):
-    client.send(bytes("Enter hotel name: ", "utf8"))
-    hotelname = client.recv(BUFSIZ).decode("utf8")
-    client.send(bytes("Enter arrival date: (dd/mm/yyyy) ", "utf8"))
-    arrivalDate = client.recv(BUFSIZ).decode("utf8")
-    client.send(bytes("Enter leaving date: (dd/mm/yyyy) ", "utf8"))
-    leavingDate = client.recv(BUFSIZ).decode("utf8")
-    if (check_date_format(arrivalDate) and check_date_format(leavingDate)) is False:
-        client.send(bytes("Wrong date format!", "utf8"))
-        search_room(client)
-    if is_sooner(arrivalDate, leavingDate) is False:
-        client.send(bytes("Arrival date must be sooner than leaving date!", "utf8"))
-        search_room(client)
-    client.send(bytes("Searching...", "utf8"))
+def search_room(client, htn, ard, lvd):
+    IDlist = []
+    if (check_date_format(ard) and check_date_format(lvd)) is False:
+        return IDlist
+    if is_sooner(ard, lvd) is False:
+        return IDlist
 
     if path.isfile('hotel.json') is False:
         raise Exception("File not found", SERVER.close())
@@ -28,15 +20,12 @@ def search_room(client):
     
     # Send room list
     for i in hotel['hotel']:
-        if hotelname == i['name']:
+        if htn == i['name']:
             for j in i['room']:
-                if j['arrivalDate'] == -1 or is_sooner(leavingDate, j['arrivalDate']) or is_sooner(j['leavingDate'], arrivalDate):
-                    roomInfo = """Room ID: %s
-                    Room Type: %s
-                    Description: %s
-                    Price: %s""" % (j['ID'], j['type'], j['description'], j['price'])
-                    client.send(bytes(roomInfo, "utf8"))
+                if j['arrivalDate'] == -1 or is_sooner(lvd, j['arrivalDate']) or is_sooner(j['leavingDate'], ard):
+                    IDlist.append(j['ID'])
             break
+    return IDlist
 
 
 # check format
