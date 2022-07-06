@@ -2,7 +2,8 @@ from http import client
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import tkinter as tk
-from tkinter import BOTH, ttk
+from tkinter import *
+from tkinter import ttk
 import json
 #from tkProc import *
 
@@ -35,8 +36,11 @@ def create_user (client_socket, usn, pas, pay, mode, control, frame):
     else:
         frame.announceF.grid(row = 3, column = 5)
 
-def sendSearch(client_socket, htn, ard, lvd, control, frame):
-    client_socket.sendall(str.encode("\n".join([htn.get(), ard.get(), lvd.get()])))
+def sendSearch(client_socket, htn, ard, lvd, control, frame, root):
+    global hotelSearchName
+    global IDlist
+    hotelSearchName = htn.get()
+    client_socket.sendall(str.encode("\n".join([hotelSearchName, ard.get(), lvd.get()])))
     htn.set("")
     ard.set("")
     lvd.set("")
@@ -49,8 +53,10 @@ def sendSearch(client_socket, htn, ard, lvd, control, frame):
         # data = client_socket.recv(2048)
         # data = data.decode('utf-8')
         data = eval(flag)
-        print(data)
-        control.showframe(Room)
+        IDlist = data
+        frameRoom = Room(root, client_socket, control)
+        frameRoom.grid(row = 0, column = 0, sticky = "nsew")
+        frameRoom.tkraise()
 
 class Controller(tk.Tk):
     def __init__(self, client_socket, *args, **kwargs):
@@ -165,7 +171,7 @@ class Home(tk.Frame):
         self.entry_arrivalDate = ttk.Entry(self, textvariable = self.ard)
         self.entry_leavingDate = ttk.Entry(self, textvariable = self.lvd)
         #button
-        self.searchButton =ttk.Button(self, text = "Search", command=lambda: sendSearch(client_socket, self.htn, self.ard, self.lvd, contrl, self))
+        self.searchButton =ttk.Button(self, text = "Search", command=lambda: sendSearch(client_socket, self.htn, self.ard, self.lvd, contrl, self, root))
         self.bookingButton = ttk.Button (self, text = "Book")
         #display calls
         self.note.grid(row = 4, column = 1, pady = 10)
@@ -190,6 +196,49 @@ class Home(tk.Frame):
         self.htlist['yscrollcommand'] = scrollbar.set
         self.htlist.grid(row = 1, column = 1)
 
+class Room(tk.Frame):
+    def __init__(self, root, client_socket, contrl):
+        tk.Frame.__init__(self, root)
+
+        # Create frame
+        mainframe = tk.Frame(self)
+        mainframe.pack(fill=BOTH, expand=1)
+        # Create canvas
+        roomcanvas = tk.Canvas(mainframe, height = 600)
+        roomcanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        # Add scrollbar
+        roomscrollbar = ttk.Scrollbar(mainframe, orient=VERTICAL, command=roomcanvas.yview)
+        roomscrollbar.pack(side=RIGHT, fill=Y) 
+        # Configure Canvas
+        roomcanvas.configure(yscrollcommand=roomscrollbar.set)
+        roomcanvas.bind('<Configure>', lambda e: roomcanvas.configure(scrollregion = roomcanvas.bbox("all")))
+        # Create another frame in canvas
+        roomframe = tk.Frame(roomcanvas, bg = "sky blue", height = 600, width = 500)
+        # Add new roomframe to a window in canvas 
+        roomcanvas.create_window((0,0), window = roomframe, anchor = "nw")
+
+        self.hotelName = tk.Label (roomframe, bg ="light green", text = hotelSearchName,font=('Helvetica 30 bold'),fg = "navy blue").grid(row = 0, column = 0, pady = 10)
+        count = 1
+        for i in hotels['hotel']:
+            if hotelSearchName == i['name']:
+                for j in i['room']:
+                    if int(j['ID']) in IDlist:
+                        tk.Label(roomframe, bg ="sky blue", text = j['ID'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        count += 1
+                        tk.Label(roomframe, bg ="sky blue", text = j['type'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        count += 1
+                        tk.Label(roomframe, bg ="sky blue", text = j['description'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        count += 1
+                        tk.Label(roomframe, bg ="sky blue", text = j['price'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        count += 1
+                        tk.Label(roomframe, bg ="sky blue", text = j['image'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        count += 1
+                        tk.Label(roomframe, bg ="sky blue", text = "__________________________________",font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        count += 1
+                break
+
+IDlist = []
+hotelSearchName = ""
 fi = open('hotel.json')
 # load json data to dict account
 hotels = json.load(fi)
