@@ -9,7 +9,7 @@ def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
         client, client_address = SERVER.accept()
-        print("%s:%s has connected.2" % client_address)
+        print("%s:%s has connected." % client_address)
 
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
@@ -27,7 +27,7 @@ def handle_client(client):  # Takes client socket as argument.
                 client.sendall(str.encode("sB"))
             else:
                 client.sendall(str.encode("fB"))
-        else:
+        elif mode == "search":
             IDlist = search_room(client, htn, ard, lvd)
             if len(IDlist) == 0:
                 client.sendall(str.encode("fS"))
@@ -35,6 +35,10 @@ def handle_client(client):  # Takes client socket as argument.
                 data = str(IDlist)
                 data = data.encode()
                 client.sendall(data)
+        elif mode == "finish":
+            totalMoney = getPayment(user)
+            totalMoney = str(totalMoney)
+            client.sendall(str.encode(totalMoney))
 
     # msg = "%s has joined the chat!" % name
     # broadcast(bytes(msg, "utf8"))

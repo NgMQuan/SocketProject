@@ -22,7 +22,8 @@ def regist_process(client, username, password, pay):
         "username": username,
         "password": password,
         "payID": pay,
-        "book": []
+        "book": [],
+        "finish": ""
     }
     account['account'].append(nAcc)
     fo = open('account.json', 'w')

@@ -1,5 +1,6 @@
 import json
 from os import path
+from datetime import date, datetime
 
 BUFSIZ = 1024
 
@@ -46,6 +47,12 @@ def book_room(client, user, htn, rt, ard, lvd, nt):
     hotel = json.load(fhi)
     fai = open('account.json')
     account = json.load(fai)
+
+    for i in account['account']:
+        if user['username'] == i['username']:
+            if i['finish'] != "":
+                return False
+
     ID = ''
     roomBooked = {}
 
@@ -61,7 +68,9 @@ def book_room(client, user, htn, rt, ard, lvd, nt):
                             "roomType": j['type'],
                             "roomDes": j['description'],
                             "roomPrice": j['price'],
-                            "roomImage": j['image']
+                            "roomImage": j['image'],
+                            "arrivalDate": ard,
+                            "leavingDate": lvd
                         }
                         bookedDate = {
                             "arrivalDate": ard,
@@ -82,7 +91,9 @@ def book_room(client, user, htn, rt, ard, lvd, nt):
                                 "roomType": j['type'],
                                 "roomDes": j['description'],
                                 "roomPrice": j['price'],
-                                "roomImage": j['image']
+                                "roomImage": j['image'],
+                                "arrivalDate": ard,
+                                "leavingDate": lvd
                             }
                             bookedDate = {
                                 "arrivalDate": ard,
@@ -106,6 +117,30 @@ def book_room(client, user, htn, rt, ard, lvd, nt):
     else:
         return False
 
+def getPayment(user):
+    fai = open('account.json')
+    account = json.load(fai)
+    total = 0
+    for i in account['account']:
+        if user['username'] == i['username']:
+            if len(i['book']) == 0:
+                return total
+            for j in i['book']:
+                ard = j['arrivalDate']
+                lvd = j['leavingDate']
+                datearr = date(int(ard[6:]), int(ard[3:5]), int(ard[0:2]))
+                dateleave = date(int(lvd[6:]), int(lvd[3:5]), int(lvd[0:2]))
+                delta = dateleave - datearr
+                datestay = delta.days
+                total = total + datestay * int(j['roomPrice'])
+            curtime = datetime.now()
+            now = curtime.strftime("%d/%m/%Y %H:%M:%S")
+            i['finish'] = now
+            break
+    fao = open('account.json', 'w')
+    json.dump(account, fao)
+    return total
+
 
 # check format
 def check_date_format(date):
@@ -126,6 +161,6 @@ def is_sooner(date1, date2):
 	    return True
     elif int(date1[3:5]) > int(date2[3:5]):
 	    return False
-    if int(date1[0:2]) > int(date2[0:2]):
+    if int(date1[0:2]) >= int(date2[0:2]):
 	    return False
     return True

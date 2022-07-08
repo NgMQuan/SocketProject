@@ -68,11 +68,27 @@ def sendBook(client_socket, htn, rt, ard, lvd, nt, control, frame, root):
     nt.set("")
     flag = client_socket.recv(2048).decode('utf-8')
     if flag == 'sB':
+        frame.payment.grid_forget()
         frame.announceF.grid_forget()
         frame.announceS.grid(row = 8, column = 1)
     else:
+        frame.payment.grid_forget()
         frame.announceS.grid_forget()
         frame.announceF.grid(row = 8, column = 1)
+
+def finishBooking(client_socket, control, frame, root):
+    client_socket.sendall(str.encode("\n".join(["finish", "0", "0", "0", "0", "0"])))
+    totalMoney = client_socket.recv(2048).decode('utf-8')
+    if totalMoney == "0":
+        frame.announceF.grid_forget()
+        frame.announceS.grid_forget()
+        frame.payment.grid(row = 8, column = 1)
+    else:
+        frame.announceF.grid_forget()
+        frame.announceS.grid_forget()
+        frame.payment['text'] = "Total Money: %s" % totalMoney
+        frame.payment.grid(row = 8, column = 1)
+
 
 class Controller(tk.Tk):
     def __init__(self, client_socket, *args, **kwargs):
@@ -112,7 +128,7 @@ class Reg(tk.Frame):
         self.password = tk.Label (self,bg = "light grey", text = "Password ",font=('Helvetica 15 bold'),fg = "sky blue")
         self.payId = tk.Label (self,bg = "light grey", text = "Pay ID ",font=('Helvetica 15 bold'),fg = "sky blue")
         self.announceF = tk.Label(self, text = "Fail to register! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
-        self.announceS = tk.Label(self, text = "Succeed! Press sign in button and log in to continue!",font=('Helvetica 10 italic'),fg = "green")
+        self.announceS = tk.Label(self, text = "Success! Press sign in button and log in to continue!",font=('Helvetica 10 italic'),fg = "green")
         #string var
         self.usn = tk.StringVar()
         self.pas = tk.StringVar()
@@ -269,9 +285,9 @@ class Book(tk.Frame):
         self.arrivalDate = tk.Label (self, bg = "light grey", text = "Arrival Date",font=('Helvetica 15 bold'),fg = "sky blue")
         self.leavingDate = tk.Label (self, bg = "light grey", text = "Leaving Date",font=('Helvetica 15 bold'),fg = "sky blue")
         self.noteUser = tk.Label (self, bg ="light grey", text = "Note", font=('Helvetica 15 bold'),fg = "sky blue")
-        self.announceS = tk.Label(self, bg = "sky blue", text = "Succeed!",font=('Helvetica 10 italic'),fg = "green")
+        self.announceS = tk.Label(self, bg = "sky blue", text = "Success!",font=('Helvetica 10 italic'),fg = "green")
         self.announceF = tk.Label(self, bg = "sky blue", text = "Fail to book! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
-        
+        self.payment = tk.Label(self, bg = "sky blue", text = "You haven't booked anything!",font=('Helvetica 10 italic'),fg = "black")
         #string var
         self.htn = tk.StringVar()
         self.rt = tk.StringVar()
@@ -287,7 +303,7 @@ class Book(tk.Frame):
         #button
         self.searchButton =ttk.Button(self, text = "Search", command = lambda: contrl.showframe(Home))
         self.bookingButton = ttk.Button (self, text = "Submit", command=lambda: sendBook(client_socket, self.htn, self.rt, self.ard, self.lvd, self.nt, contrl, self, root))
-        self.finishButton = ttk.Button (self, text = "Finish")
+        self.finishButton = ttk.Button (self, text = "Finish", command = lambda: finishBooking(client_socket, contrl, self, root))
         #display calls
         self.note.grid(row = 2, column = 1, pady = 10)
         self.hotelName.grid(row = 3, column = 0, pady = 10)
