@@ -1,14 +1,1 @@
-{
-    "account": [
-        {
-            "username": "duckongu",
-            "password": "vianhquadeptrai",
-            "payID": "0123401234"
-        },
-        {
-            "username": "quanngu",
-            "password": "a123",
-            "payID": "1234567895"
-        }
-    ]
-}
+{"account": [{"username": "duckongu", "password": "vianhquadeptrai", "payID": "0123401234", "book": []}, {"username": "quanngu", "password": "a123", "payID": "1234567895", "book": []}, {"username": "testssss", "password": "asd123456", "payID": "1234567890", "book": []}, {"username": "testtttttt", "password": "123456asd", "payID": "1234567890", "book": []}, {"username": "clone01", "password": "asd123", "payID": "1597534268", "book": []}, {"username": "admin01", "password": "a123", "payID": "1233211230", "book": [{"hotelName": "CC", "roomID": 1, "roomType": "VIP", "roomDes": "Nothing special", "roomPrice": 1000000, "roomImage": "OW1.png"}, {"hotelName": "CC", "roomID": 2, "roomType": "normal", "roomDes": "Nothing special", "roomPrice": 500000, "roomImage": "OW2.png"}, {"hotelName": "CC", "roomID": 3, "roomType": "normal", "roomDes": "Nothing special", "roomPrice": 500000, "roomImage": "OW3.png"}]}]}

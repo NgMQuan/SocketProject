@@ -40,7 +40,7 @@ def sendSearch(client_socket, htn, ard, lvd, control, frame, root):
     global hotelSearchName
     global IDlist
     hotelSearchName = htn.get()
-    client_socket.sendall(str.encode("\n".join(["search", hotelSearchName, ard.get(), lvd.get()])))
+    client_socket.sendall(str.encode("\n".join(["search", hotelSearchName, "0", ard.get(), lvd.get(), "0"])))
     htn.set("")
     ard.set("")
     lvd.set("")
@@ -59,6 +59,21 @@ def sendSearch(client_socket, htn, ard, lvd, control, frame, root):
         frameRoom.grid(row = 0, column = 0, sticky = "nsew")
         frameRoom.tkraise()
 
+def sendBook(client_socket, htn, rt, ard, lvd, nt, control, frame, root):
+    client_socket.sendall(str.encode("\n".join(["book", htn.get(), rt.get(), ard.get(), lvd.get(), nt.get()])))
+    htn.set("")
+    rt.set("")
+    ard.set("")
+    lvd.set("")
+    nt.set("")
+    flag = client_socket.recv(2048).decode('utf-8')
+    if flag == 'sB':
+        frame.announceF.grid_forget()
+        frame.announceS.grid(row = 8, column = 1)
+    else:
+        frame.announceS.grid_forget()
+        frame.announceF.grid(row = 8, column = 1)
+
 class Controller(tk.Tk):
     def __init__(self, client_socket, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -70,7 +85,7 @@ class Controller(tk.Tk):
         container.grid_columnconfigure(0, weight = 1)
         self.frames = {}
 
-        for i in (Reg, Log, Home):
+        for i in (Reg, Log, Home, Book):
             frame = i(container, client_socket, self)
 
             self.frames[i] = frame
@@ -173,7 +188,7 @@ class Home(tk.Frame):
         self.entry_leavingDate = ttk.Entry(self, textvariable = self.lvd)
         #button
         self.searchButton =ttk.Button(self, text = "Search", command=lambda: sendSearch(client_socket, self.htn, self.ard, self.lvd, contrl, self, root))
-        self.bookingButton = ttk.Button (self, text = "Book")
+        self.bookingButton = ttk.Button (self, text = "Book", command = lambda: contrl.showframe(Book))
         #display calls
         self.note.grid(row = 4, column = 1, pady = 10)
         self.hotelName.grid(row = 5, column = 0, pady = 10)
@@ -234,10 +249,61 @@ class Room(tk.Frame):
                         count += 1
                         tk.Label(roomframe, bg ="sky blue", text = j['image'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
-                        tk.Label(roomframe, bg ="sky blue", text = "__________________________________",font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        tk.Label(roomframe, bg ="sky blue", text = "____________________________________________________________________",font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
                 break
         self.searchAgainButton = tk.Button(roomframe, text="Search Again", command = lambda: contrl.showframe(Home)).grid(row=count,column=0)
+        count += 1
+        self.bookingButton = tk.Button(roomframe, text="Book", command = lambda: contrl.showframe(Book)).grid(row=count,column=0)
+
+class Book(tk.Frame):
+    def __init__(self, root, client_socket, contrl):
+        tk.Frame.__init__(self, root)
+        #Background
+        self.Background = tk.Canvas(self, bg="sky blue").place(height = 500,width = 550)
+        #Labels
+        self.searchLabel = tk.Label (self, bg ="sky blue", text = "Booking",font=('Helvetica 30 bold'),fg = "white").grid(row = 0, column = 1, pady = 10)
+        self.note = tk.Label (self, bg ="sky blue" , text = "Fill up the form below to book", font =('Helvetica 15'),  fg = "white")
+        self.hotelName = tk.Label (self, bg ="light grey", text = "Hotel name", font=('Helvetica 15 bold'),fg = "sky blue")
+        self.roomType = tk.Label (self, bg ="light grey", text = "Room type", font=('Helvetica 15 bold'),fg = "sky blue")
+        self.arrivalDate = tk.Label (self, bg = "light grey", text = "Arrival Date",font=('Helvetica 15 bold'),fg = "sky blue")
+        self.leavingDate = tk.Label (self, bg = "light grey", text = "Leaving Date",font=('Helvetica 15 bold'),fg = "sky blue")
+        self.noteUser = tk.Label (self, bg ="light grey", text = "Note", font=('Helvetica 15 bold'),fg = "sky blue")
+        self.announceS = tk.Label(self, bg = "sky blue", text = "Succeed!",font=('Helvetica 10 italic'),fg = "green")
+        self.announceF = tk.Label(self, bg = "sky blue", text = "Fail to book! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
+        
+        #string var
+        self.htn = tk.StringVar()
+        self.rt = tk.StringVar()
+        self.ard = tk.StringVar()
+        self.lvd = tk.StringVar()
+        self.nt = tk.StringVar()
+        #entry
+        self.entry_hotelName = ttk.Entry(self, textvariable = self.htn)
+        self.entry_roomType = ttk.Entry(self, textvariable = self.rt)
+        self.entry_arrivalDate = ttk.Entry(self, textvariable = self.ard)
+        self.entry_leavingDate = ttk.Entry(self, textvariable = self.lvd)
+        self.entry_noteUser = ttk.Entry(self, textvariable = self.nt)
+        #button
+        self.searchButton =ttk.Button(self, text = "Search", command = lambda: contrl.showframe(Home))
+        self.bookingButton = ttk.Button (self, text = "Submit", command=lambda: sendBook(client_socket, self.htn, self.rt, self.ard, self.lvd, self.nt, contrl, self, root))
+        self.finishButton = ttk.Button (self, text = "Finish")
+        #display calls
+        self.note.grid(row = 2, column = 1, pady = 10)
+        self.hotelName.grid(row = 3, column = 0, pady = 10)
+        self.roomType.grid(row = 4, column = 0, pady = 10)
+        self.arrivalDate.grid(row = 5, column = 0, pady = 10)
+        self.leavingDate.grid(row = 6, column = 0, pady = 10)
+        self.noteUser.grid(row = 7, column = 0, pady = 10)
+        self.entry_hotelName.grid(row = 3, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
+        self.entry_roomType.grid(row = 4, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
+        self.entry_arrivalDate.grid(row = 5, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
+        self.entry_leavingDate.grid(row = 6, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
+        self.entry_noteUser.grid(row = 7, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
+        self.searchButton.grid(row = 9, column = 0, padx = 10, pady = 10)
+        self.bookingButton.grid(row = 9, column = 1, padx = 10, pady = 10)
+        self.finishButton.grid(row = 9, column = 2, padx = 10, pady = 10)
+
 
 IDlist = []
 hotelSearchName = ""

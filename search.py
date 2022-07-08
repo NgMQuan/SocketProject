@@ -35,6 +35,77 @@ def search_room(client, htn, ard, lvd):
             break
     return IDlist
 
+def book_room(client, user, htn, rt, ard, lvd, nt):
+    if (check_date_format(ard) and check_date_format(lvd)) is False:
+        return False
+    if is_sooner(ard, lvd) is False:
+        return False
+    if path.isfile('hotel.json') is False:
+        raise Exception("File not found", SERVER.close())
+    fhi = open('hotel.json')
+    hotel = json.load(fhi)
+    fai = open('account.json')
+    account = json.load(fai)
+    ID = ''
+    roomBooked = {}
+
+    for i in hotel['hotel']:
+        if htn == i['name']:
+            for j in i['room']:
+                if j['type'] == rt:
+                    if len(j['book']) == 0:
+                        ID = j['ID']
+                        roomBooked = {
+                            "hotelName": htn,
+                            "roomID": j['ID'],
+                            "roomType": j['type'],
+                            "roomDes": j['description'],
+                            "roomPrice": j['price'],
+                            "roomImage": j['image']
+                        }
+                        bookedDate = {
+                            "arrivalDate": ard,
+                            "leavingDate": lvd
+                        }
+                        j['book'].append(bookedDate)
+                    else:
+                        check = True
+                        for k in j['book']:
+                            if not(is_sooner(lvd, k['arrivalDate']) or is_sooner(k['leavingDate'], ard)):
+                                check = False
+                                break
+                        if check is True:
+                            ID = j['ID']
+                            roomBooked = {
+                                "hotelName": htn,
+                                "roomID": j['ID'],
+                                "roomType": j['type'],
+                                "roomDes": j['description'],
+                                "roomPrice": j['price'],
+                                "roomImage": j['image']
+                            }
+                            bookedDate = {
+                                "arrivalDate": ard,
+                                "leavingDate": lvd
+                            }
+                            j['book'].append(bookedDate)
+                if ID != '':
+                    break
+            break
+    fho = open('hotel.json', 'w')
+    json.dump(hotel, fho)
+    
+    for i in account['account']:
+        if user['username'] == i['username']:
+            i['book'].append(roomBooked)
+    fao = open('account.json', 'w')
+    json.dump(account, fao)
+
+    if ID != '':
+        return True
+    else:
+        return False
+
 
 # check format
 def check_date_format(date):

@@ -3,7 +3,7 @@ from threading import Thread
 import json
 from os import path
 from regSys import *
-from search import search_room
+from search import *
 
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
@@ -14,19 +14,6 @@ def accept_incoming_connections():
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
 
-def search_or_book(client):
-    mode, htn, ard, lvd = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
-
-    if mode == "search":
-        IDlist = search_room(client, htn, ard, lvd)
-        if len(IDlist) == 0:
-            client.sendall(str.encode("fS"))
-            search_or_book(client)
-        else:
-            data = str(IDlist)
-            data = data.encode()
-            client.sendall(data)
-
 
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
@@ -34,8 +21,13 @@ def handle_client(client):  # Takes client socket as argument.
     user = modeAccept(client)
 
     while True:
-        mode, htn, ard, lvd = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
-        if mode == "search":
+        mode, htn, rt, ard, lvd, nt = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
+        if mode == "book":
+            if book_room(client, user, htn, rt, ard, lvd, nt) is True:
+                client.sendall(str.encode("sB"))
+            else:
+                client.sendall(str.encode("fB"))
+        else:
             IDlist = search_room(client, htn, ard, lvd)
             if len(IDlist) == 0:
                 client.sendall(str.encode("fS"))
