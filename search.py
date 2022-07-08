@@ -133,6 +133,8 @@ def getPayment(user):
                 delta = dateleave - datearr
                 datestay = delta.days
                 total = total + datestay * int(j['roomPrice'])
+            if i['finish'] != "":
+                return total
             curtime = datetime.now()
             now = curtime.strftime("%d/%m/%Y %H:%M:%S")
             i['finish'] = now
