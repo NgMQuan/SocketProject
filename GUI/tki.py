@@ -40,7 +40,7 @@ def sendSearch(client_socket, htn, ard, lvd, control, frame, root):
     global hotelSearchName
     global IDlist
     hotelSearchName = htn.get()
-    client_socket.sendall(str.encode("\n".join([hotelSearchName, ard.get(), lvd.get()])))
+    client_socket.sendall(str.encode("\n".join(["search", hotelSearchName, ard.get(), lvd.get()])))
     htn.set("")
     ard.set("")
     lvd.set("")
@@ -52,6 +52,7 @@ def sendSearch(client_socket, htn, ard, lvd, control, frame, root):
     else:
         # data = client_socket.recv(2048)
         # data = data.decode('utf-8')
+        frame.announceF.grid_forget()
         data = eval(flag)
         IDlist = data
         frameRoom = Room(root, client_socket, control)

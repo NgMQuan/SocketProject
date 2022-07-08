@@ -14,27 +14,35 @@ def accept_incoming_connections():
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
 
-def searchRoom(client):
-    htn, ard, lvd = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
+def search_or_book(client):
+    mode, htn, ard, lvd = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
 
-    IDlist = search_room(client, htn, ard, lvd)
-    if len(IDlist) == 0:
-        client.sendall(str.encode("fS"))
-        return searchRoom(client)
-    else:
-        return IDlist
+    if mode == "search":
+        IDlist = search_room(client, htn, ard, lvd)
+        if len(IDlist) == 0:
+            client.sendall(str.encode("fS"))
+            search_or_book(client)
+        else:
+            data = str(IDlist)
+            data = data.encode()
+            client.sendall(data)
 
 
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
 
     user = modeAccept(client)
-    IDlist = searchRoom(client)
-    data = str(IDlist)
-    data = data.encode()
-    client.sendall(data)
-    
 
+    while True:
+        mode, htn, ard, lvd = [str(i) for i in client.recv(2048).decode('utf-8').split('\n')]
+        if mode == "search":
+            IDlist = search_room(client, htn, ard, lvd)
+            if len(IDlist) == 0:
+                client.sendall(str.encode("fS"))
+            else:
+                data = str(IDlist)
+                data = data.encode()
+                client.sendall(data)
 
     # msg = "%s has joined the chat!" % name
     # broadcast(bytes(msg, "utf8"))

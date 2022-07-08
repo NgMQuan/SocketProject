@@ -22,8 +22,16 @@ def search_room(client, htn, ard, lvd):
     for i in hotel['hotel']:
         if htn == i['name']:
             for j in i['room']:
-                if j['arrivalDate'] == -1 or is_sooner(lvd, j['arrivalDate']) or is_sooner(j['leavingDate'], ard):
+                if len(j['book']) == 0:
                     IDlist.append(j['ID'])
+                else:
+                    check = True
+                    for k in j['book']:
+                        if not(is_sooner(lvd, k['arrivalDate']) or is_sooner(k['leavingDate'], ard)):
+                            check = False
+                            break
+                    if check is True:
+                        IDlist.append(j['ID'])
             break
     return IDlist
 
