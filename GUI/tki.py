@@ -255,13 +255,13 @@ class Room(tk.Frame):
             if hotelSearchName == i['name']:
                 for j in i['room']:
                     if int(j['ID']) in IDlist:
-                        tk.Label(roomframe, bg ="sky blue", text = j['ID'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        tk.Label(roomframe, bg ="sky blue", text = "ID: %s" %j['ID'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
-                        tk.Label(roomframe, bg ="sky blue", text = j['type'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        tk.Label(roomframe, bg ="sky blue", text = "Type: %s" %j['type'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
-                        tk.Label(roomframe, bg ="sky blue", text = j['description'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        tk.Label(roomframe, bg ="sky blue", text = "Description: %s" %j['description'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
-                        tk.Label(roomframe, bg ="sky blue", text = j['price'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        tk.Label(roomframe, bg ="sky blue", text = "Price: %s" %j['price'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
                         tk.Label(roomframe, bg ="sky blue", text = j['image'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
