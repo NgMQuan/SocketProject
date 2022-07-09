@@ -39,6 +39,9 @@ def handle_client(client):  # Takes client socket as argument.
             totalMoney = getPayment(user)
             totalMoney = str(totalMoney)
             client.sendall(str.encode(totalMoney))
+        else:
+            # remove room
+            print("Code here")
 
     # msg = "%s has joined the chat!" % name
     # broadcast(bytes(msg, "utf8"))
