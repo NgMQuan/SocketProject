@@ -1,0 +1,4 @@
+
+*.pyc
+*.json
+UI_test.py
