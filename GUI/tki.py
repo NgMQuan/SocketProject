@@ -131,7 +131,7 @@ def refundBooking(client_socket, frame, control):
     if refundMoney == "-1":
         frame.payment.grid(row = 8, column = 1)
     else:
-        frame.payment['text'] = "Sucessful. Refund: to %s payID: %s" %(control.thisClient['payID'], refundMoney)
+        frame.payment['text'] = "Sucessful. Refund: to %s payID: %s" %(refundMoney, control.thisClient['payID'])
         frame.payment.grid(row = 8, column = 1)
     data.fi = open('account.json')
     data.account = json.load(data.fi)
@@ -390,8 +390,10 @@ class Refund(tk.Frame):
         #Labels
         self.searchLabel = tk.Label (self.child1, bg ="sky blue", text = "Refund",font=('Helvetica 30 bold'),fg = "white").grid(row = 0, column = 1, pady = 10)
         self.hotelName = tk.Label (self.child1, bg ="light grey", text = "Hotel name", font=('Helvetica 15 bold'),fg = "sky blue")
-        self.roomType = tk.Label (self.child1, bg ="light grey", text = "Room type", font=('Helvetica 15 bold'),fg = "sky blue")
-        self.payment = tk.Label(self.child1, text = "This hotel is not in your booked list!",font=('Helvetica 10 italic'),fg = "green")
+        self.roomType = tk.Label (self.child1, bg ="light grey", text = "Room ID", font=('Helvetica 15 bold'),fg = "sky blue")
+        self.arrivalDate = tk.Label (self.child1, bg ="light grey", text = "Arrival Date", font=('Helvetica 15 bold'),fg = "sky blue")
+        self.leavingDate = tk.Label (self.child1, bg ="light grey", text = "Leaving Date", font=('Helvetica 15 bold'),fg = "sky blue")
+        self.payment = tk.Label(self.child1, text = "Fail to remove! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
         self.hotelNameCol = tk.Label(self.child2, text = "Hotel", bg = "black", font=('Helvetica 20 bold'),fg = "pink")
         self.roomTypeCol = tk.Label(self.child2, text = "Room", bg = "black", font=('Helvetica 20 bold'),fg = "pink")
         #string var
@@ -422,6 +424,8 @@ class Refund(tk.Frame):
         #display calls
         self.hotelName.grid(row = 3, column = 0, pady = 10)
         self.roomType.grid(row = 4, column = 0, pady = 10)
+        self.arrivalDate.grid(row = 5, column = 0, pady = 10)
+        self.leavingDate.grid(row = 6, column = 0, pady = 10)
         self.entry_hotelName.grid(row = 3, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
         self.entry_roomType.grid(row = 4, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)
         self.entry_arrivalDate.grid(row = 5, column = 1, padx = 10, pady = 10, ipadx = 80, ipady = 3)

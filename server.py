@@ -23,8 +23,8 @@ def refundMethod(user, htn, rt, arv, lea):
                     userR = j
                     i['book'].remove(userR)
                     user['book'].remove(userR)
-                    i['finish'] = ""
-                    user['finish'] = ""
+                    #i['finish'] = ""
+                    #user['finish'] = ""
                     break
     if userR == 0:
         return -1
