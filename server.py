@@ -14,6 +14,33 @@ def accept_incoming_connections():
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,)).start()
 
+def refundMethod(user, htn, rt, arv, lea):
+    userR = 0
+    for i in data.account['account']:
+        if i != {} and i['username'] == user['username']:
+            for j in i['book']:
+                if j != {} and htn == j['hotelName'] and rt == str(j['roomID']) and arv == j['arrivalDate'] and lea == j['leavingDate']:
+                    userR = j
+                    i['book'].remove(userR)
+                    user['book'].remove(userR)
+                    i['finish'] = ""
+                    user['finish'] = ""
+                    break
+    if userR == 0:
+        return -1
+    for i in data.hotel['hotel']:
+        if htn == i['name']:
+            for j in i['room']:
+                if rt == str(j['ID']):
+                    for k in j['book']:
+                        if k['arrivalDate'] == arv and k['leavingDate'] == lea:       
+                                    j['book'].remove(k)
+                                    fo = open('hotel.json', 'w')
+                                    json.dump(data.hotel, fo)
+                                    fo = open('account.json', 'w')
+                                    json.dump(data.account, fo)
+                                    return userR['roomPrice']
+    return -1
 
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
@@ -40,8 +67,8 @@ def handle_client(client):  # Takes client socket as argument.
             totalMoney = str(totalMoney)
             client.sendall(str.encode(totalMoney))
         else:
-            # remove room
-            print("Code here")
+            refund = refundMethod(user, htn, rt, ard, lvd)
+            client.sendall(str.encode(str(refund)))
 
     # msg = "%s has joined the chat!" % name
     # broadcast(bytes(msg, "utf8"))
@@ -74,6 +101,7 @@ def modeAccept(client):
             return modeAccept(client)
         else:
             client.sendall(str.encode("sL"))
+            client.sendall(str.encode(acc['username']))
             return acc
     else:
         if regist_process(client, user, passw, pay) is True:
@@ -98,7 +126,12 @@ def modeAccept(client):
         modeAccept(client)
     elif mode == 'login':
         return login_process(client) """
-
+class Data:
+    def __init__(self):
+        self.fiA = open('account.json')
+        self.fiH = open('hotel.json')
+        self.account = json.load(self.fiA)
+        self.hotel = json.load(self.fiH)
 
 clients = {}
 addresses = {}
@@ -110,6 +143,8 @@ ADDR = (HOST, PORT)
 
 SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind(ADDR)
+
+data = Data()
 
 if __name__ == "__main__":
     SERVER.listen(5)
