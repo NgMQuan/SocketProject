@@ -15,11 +15,19 @@ def accept_incoming_connections():
         Thread(target=handle_client, args=(client,)).start()
 
 def refundMethod(user, htn, rt, arv, lea):
+    data = Data()
     userR = 0
+    curtime = datetime.now()
     for i in data.account['account']:
         if i != {} and i['username'] == user['username']:
             for j in i['book']:
                 if j != {} and htn == j['hotelName'] and rt == str(j['roomID']) and arv == j['arrivalDate'] and lea == j['leavingDate']:
+                    if j['finish'] != "":
+                        bt = j['finish']
+                        timeBooked = datetime(int(bt[6:10]), int(bt[3:5]), int(bt[0:2]), int(bt[11:13]), int(bt[14:16]), int(bt[17:]))
+                        secdiff = curtime - timeBooked
+                        if secdiff.total_seconds() > 86400:
+                            return -1
                     userR = j
                     i['book'].remove(userR)
                     user['book'].remove(userR)
@@ -144,7 +152,7 @@ ADDR = (HOST, PORT)
 SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind(ADDR)
 
-data = Data()
+# data = Data()
 
 if __name__ == "__main__":
     SERVER.listen(5)

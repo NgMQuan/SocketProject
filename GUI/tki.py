@@ -131,7 +131,7 @@ def refundBooking(client_socket, frame, control):
     if refundMoney == "-1":
         frame.payment.grid(row = 8, column = 1)
     else:
-        frame.payment['text'] = "Sucessful. Refund: to %s payID: %s" %(refundMoney, control.thisClient['payID'])
+        frame.payment['text'] = "Successful. Refund: %s to payID: %s" %(refundMoney, control.thisClient['payID'])
         frame.payment.grid(row = 8, column = 1)
     data.fi = open('account.json')
     data.account = json.load(data.fi)

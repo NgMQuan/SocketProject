@@ -48,10 +48,10 @@ def book_room(client, user, htn, rt, ard, lvd, nt):
     fai = open('account.json')
     account = json.load(fai)
 
-    for i in account['account']:
-        if user['username'] == i['username']:
-            if i['finish'] != "":
-                return False
+    # for i in account['account']:
+    #     if user['username'] == i['username']:
+    #         if i['finish'] != "":
+    #             return False
 
     ID = ''
     roomBooked = {}
@@ -70,7 +70,8 @@ def book_room(client, user, htn, rt, ard, lvd, nt):
                             "roomPrice": j['price'],
                             "roomImage": j['image'],
                             "arrivalDate": ard,
-                            "leavingDate": lvd
+                            "leavingDate": lvd,
+                            "finish": ""
                         }
                         bookedDate = {
                             "arrivalDate": ard,
@@ -93,7 +94,8 @@ def book_room(client, user, htn, rt, ard, lvd, nt):
                                 "roomPrice": j['price'],
                                 "roomImage": j['image'],
                                 "arrivalDate": ard,
-                                "leavingDate": lvd
+                                "leavingDate": lvd,
+                                "finish": ""
                             }
                             bookedDate = {
                                 "arrivalDate": ard,
@@ -109,6 +111,7 @@ def book_room(client, user, htn, rt, ard, lvd, nt):
     for i in account['account']:
         if user['username'] == i['username']:
             i['book'].append(roomBooked)
+            user['book'].append(roomBooked)
     fao = open('account.json', 'w')
     json.dump(account, fao)
 
@@ -121,11 +124,19 @@ def getPayment(user):
     fai = open('account.json')
     account = json.load(fai)
     total = 0
+    curtime = datetime.now()
+    now = curtime.strftime("%d/%m/%Y %H:%M:%S")
     for i in account['account']:
         if user['username'] == i['username']:
             if len(i['book']) == 0:
                 return total
             for j in i['book']:
+                if j == {}:
+                    i['book'].remove(j)
+                    user['book'].remove(j)
+                    continue
+                if j['finish'] == "":
+                    j.update({"finish": now})
                 ard = j['arrivalDate']
                 lvd = j['leavingDate']
                 datearr = date(int(ard[6:]), int(ard[3:5]), int(ard[0:2]))
@@ -133,11 +144,14 @@ def getPayment(user):
                 delta = dateleave - datearr
                 datestay = delta.days
                 total = total + datestay * int(j['roomPrice'])
-            if i['finish'] != "":
-                return total
-            curtime = datetime.now()
-            now = curtime.strftime("%d/%m/%Y %H:%M:%S")
-            i['finish'] = now
+            for j in user['book']:
+                if j['finish'] == "":
+                    j.update({"finish": now})
+            # if i['finish'] != "":
+            #     return total
+            # curtime = datetime.now()
+            # now = curtime.strftime("%d/%m/%Y %H:%M:%S")
+            # i['finish'] = now
             break
     fao = open('account.json', 'w')
     json.dump(account, fao)
