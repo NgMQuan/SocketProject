@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import json
+from PIL import Image, ImageTk
 #from tkProc import *
 
 def initGUI(client_socket):
@@ -129,9 +130,11 @@ def refundBooking(client_socket, frame, control):
     frame.lvd.set("")
     refundMoney = client_socket.recv(2048).decode('utf-8')
     if refundMoney == "-1":
-        frame.payment.grid(row = 8, column = 1)
+        frame.payment.grid_forget()
+        frame.paymentF.grid(row = 8, column = 1)
     else:
-        frame.payment['text'] = "Successful. Refund: %s to payID: %s" %(refundMoney, control.thisClient['payID'])
+        frame.paymentF.grid_forget()
+        frame.payment['text'] = "Successful. Refund to payID: %s" % control.thisClient['payID']
         frame.payment.grid(row = 8, column = 1)
     data.fi = open('account.json')
     data.account = json.load(data.fi)
@@ -321,7 +324,11 @@ class Room(tk.Frame):
                         count += 1
                         tk.Label(roomframe, bg ="sky blue", text = "Price: %s" %j['price'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
-                        tk.Label(roomframe, bg ="sky blue", text = j['image'],font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
+                        image = Image.open(j['image'])    
+                        hotelImage = ImageTk.PhotoImage(image.resize((300, 205), Image.ANTIALIAS))
+                        img = tk.Label(roomframe, image = hotelImage)
+                        img.image = hotelImage
+                        img.grid(row = count, column = 0)
                         count += 1
                         tk.Label(roomframe, bg ="sky blue", text = "____________________________________________________________________",font=('Helvetica 15'),fg = "black").grid(row = count, column = 0, pady = 10)
                         count += 1
@@ -393,7 +400,8 @@ class Refund(tk.Frame):
         self.roomType = tk.Label (self.child1, bg ="light grey", text = "Room ID", font=('Helvetica 15 bold'),fg = "sky blue")
         self.arrivalDate = tk.Label (self.child1, bg ="light grey", text = "Arrival Date", font=('Helvetica 15 bold'),fg = "sky blue")
         self.leavingDate = tk.Label (self.child1, bg ="light grey", text = "Leaving Date", font=('Helvetica 15 bold'),fg = "sky blue")
-        self.payment = tk.Label(self.child1, text = "Fail to remove! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
+        self.payment = tk.Label(self.child1, text = "Success!",font=('Helvetica 10 italic'),fg = "green")
+        self.paymentF = tk.Label(self.child1, text = "Fail to remove! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
         self.hotelNameCol = tk.Label(self.child2, text = "Hotel", bg = "black", font=('Helvetica 20 bold'),fg = "pink")
         self.roomTypeCol = tk.Label(self.child2, text = "Room", bg = "black", font=('Helvetica 20 bold'),fg = "pink")
         #string var
