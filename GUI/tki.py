@@ -18,6 +18,12 @@ def getUser(uID):
             return i
     return -1
     
+def hiden(frame):
+    if frame.entry_password['show'] == '*':
+        frame.entry_password['show'] = ''
+    else:
+        frame.entry_password['show'] = '*'
+
 def create_user (client_socket, usn, pas, pay, mode, control, frame):
     """Handles sending username and password."""
     if (type(pay) == str):
@@ -200,6 +206,7 @@ class Reg(tk.Frame):
         #button
         self.create_button =ttk.Button(self, text="Register", command=lambda: create_user(client_socket, self.usn, self.pas, self.pay, "reg", contrl, self))
         self.signin_button = ttk.Button (self, text = "Sign In", command = lambda: contrl.showframe(Log))
+        self.visiblePass = tk.Button(self, text = "ಥ", command = lambda: hiden(self))
         #display calls
         self.welcom1.grid(row = 3, column = 0, padx = 30, pady = 10)
         self.username.grid(row = 4, column = 4, padx = 40, pady = 10)
@@ -210,6 +217,7 @@ class Reg(tk.Frame):
         self.entry_payId.grid(row = 6, column = 5, padx = 20, pady = 10, ipadx = 80, ipady = 3)
         self.signin_button.grid(row = 6, column = 0, padx = 10, pady = 10)
         self.create_button.grid(row = 7, column = 5, padx = 10, pady = 10)
+        self.visiblePass.grid(row = 5, column = 6)
 
 class Log(tk.Frame):
     def __init__(self, root, client_socket, contrl):
@@ -223,6 +231,7 @@ class Log(tk.Frame):
         self.username = tk.Label (self,bg ="light grey", text = "Username ", font=('Helvetica 15 bold'),fg = "sky blue")
         self.password = tk.Label (self,bg = "light grey", text = "Password ",font=('Helvetica 15 bold'),fg = "sky blue")
         self.announceF = tk.Label(self, text = "Fail to log in! Please check and try again!",font=('Helvetica 10 italic'),fg = "red")
+        self.visiblePass = tk.Button(self, text = "ಥ", command = lambda: hiden(self))
         #string var
         self.usn = tk.StringVar()
         self.pas = tk.StringVar()
@@ -236,6 +245,7 @@ class Log(tk.Frame):
         self.welcom1.grid(row = 3, column = 0, padx = 30, pady = 10)
         self.username.grid(row = 4, column = 4, padx = 40, pady = 10)
         self.password.grid(row = 5, column = 4, padx = 40, pady = 10)
+        self.visiblePass.grid(row = 5, column = 6)
         self.entry_username.grid(row = 4, column = 5, padx = 20, pady = 10, ipadx = 80, ipady = 3)
         self.entry_password.grid(row = 5, column = 5, padx = 20, pady = 10, ipadx = 80, ipady = 3)
         self_button.grid(row = 5, column = 0, padx = 10, pady = 10)
